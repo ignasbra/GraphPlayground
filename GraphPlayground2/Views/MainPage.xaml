@@ -67,15 +67,15 @@
                 </ItemsControl.ItemContainerStyle>
 
                 <ItemsControl.Resources>
-                    <DataTemplate DataType="{x:Type model:NodeItem}">
-                        <Ellipse Width="{Binding Width}" Height="{Binding Height}" Fill="Black"/>
+                    <DataTemplate DataType="{x:Type model:NodeViewModel}">
+                        <Ellipse Width="{Binding Width}" Height="{Binding Height}" Fill="{Binding Color}"/>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type model:EdgeItem}">
+                    <DataTemplate DataType="{x:Type model:EdgeViewModel}">
                         <Line
                          X1="{Binding A_X}" Y1="{Binding A_Y}"
                          X2="{Binding B_X}" Y2="{Binding B_Y}"
-                         Stroke="Orange"
+                         Stroke="{Binding Color}"
                          StrokeThickness="4"/>
 
                     </DataTemplate>

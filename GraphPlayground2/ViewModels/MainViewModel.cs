@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Media;
 using GraphPlayground2.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -17,7 +18,6 @@ namespace GraphPlayground2.ViewModels
             OnRightCickCommand = new RelayCommand<System.Windows.Point>(x => HandleRightClick(x));
             OnEdgeStateClickCommand = new RelayCommand(ChangeStateToEdgeModification);
             OnNodeStateClickCommand = new RelayCommand(ChangeStateToNodeModification);
-
         }
 
         public ObservableCollection<ICanvasObject> CanvasObjects { get; set; }
@@ -29,8 +29,8 @@ namespace GraphPlayground2.ViewModels
         public ICommand OnEdgeStateClickCommand { get; }
         public ICommand OnNodeStateClickCommand { get; }
 
-        public NodeItem FirstSelectedNodeItem { get; set; }
-        public NodeItem SecondSelectedNodeItem { get; set; }
+        public NodeViewModel FirstSelectedNodeItem { get; set; }
+        public NodeViewModel SecondSelectedNodeItem { get; set; }
 
         private void HandleLeftClick(System.Windows.Point point)
         {
@@ -61,7 +61,7 @@ namespace GraphPlayground2.ViewModels
         }
 
         private void AddNode(System.Windows.Point point) => 
-            CanvasObjects.Add(new NodeItem(point.X, point.Y, 10, 10));
+            CanvasObjects.Add(new NodeViewModel(point.X, point.Y, 10, 10));
 
         private void AddEdge(System.Windows.Point point)
         {
@@ -71,11 +71,17 @@ namespace GraphPlayground2.ViewModels
             if (FirstSelectedNodeItem == null)
             {
                 FirstSelectedNodeItem = clickedNodeItem;
+                clickedNodeItem.Color = Brushes.CadetBlue;
+
             }
             else if (SecondSelectedNodeItem == null)
             {
                 SecondSelectedNodeItem = clickedNodeItem;
-                CanvasObjects.Add(new EdgeItem(FirstSelectedNodeItem, SecondSelectedNodeItem, 1, 5));
+
+                CanvasObjects.Add(new EdgeViewModel(FirstSelectedNodeItem, SecondSelectedNodeItem, 1, 5));
+
+                FirstSelectedNodeItem.Color = Brushes.Black;
+
                 FirstSelectedNodeItem = null;
                 SecondSelectedNodeItem = null;
             }
@@ -106,13 +112,13 @@ namespace GraphPlayground2.ViewModels
             CanvasState = CanvasStateEnum.NodeModification;
         }
 
-        private NodeItem GetClickedNodeItem(System.Windows.Point point)
+        private NodeViewModel GetClickedNodeItem(System.Windows.Point point)
         {
             foreach (var canvasObject in CanvasObjects)
             {
-                if (canvasObject is NodeItem)
+                if (canvasObject is NodeViewModel)
                 {
-                    var nodeItem = canvasObject as NodeItem;
+                    var nodeItem = canvasObject as NodeViewModel;
                     if (IsPointWithinNode(point, nodeItem))
                     {
                         return nodeItem;
@@ -122,7 +128,7 @@ namespace GraphPlayground2.ViewModels
             return null;
         }
 
-        private bool IsPointWithinNode(System.Windows.Point point, NodeItem node) => 
+        private bool IsPointWithinNode(System.Windows.Point point, NodeViewModel node) => 
             point.X < (node.X + node.Width) && point.X > (node.X - node.Width) && 
             point.Y < (node.Y + node.Width) && point.Y > (node.Y - node.Width);
     }
