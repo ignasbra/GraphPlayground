@@ -27,7 +27,7 @@ namespace GraphPlayground2.Models
             B_Y = b.Y + 5;
             Weight = weight;
             StrokeThickness = strokeThickness;
-            Color = Brushes.Orange;
+            Color = Brushes.LightBlue;
         }
     }
 }

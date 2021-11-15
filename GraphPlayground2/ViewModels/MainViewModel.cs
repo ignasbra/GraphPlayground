@@ -18,6 +18,8 @@ namespace GraphPlayground2.ViewModels
             OnRightCickCommand = new RelayCommand<System.Windows.Point>(x => HandleRightClick(x));
             OnEdgeStateClickCommand = new RelayCommand(ChangeStateToEdgeModification);
             OnNodeStateClickCommand = new RelayCommand(ChangeStateToNodeModification);
+            OnPointAClickCommand = new RelayCommand(ChangeStateToAPointSelection);
+            OnPointBClickCommand = new RelayCommand(ChangeStateToBPointSelection);
         }
 
         public ObservableCollection<ICanvasObject> CanvasObjects { get; set; }
@@ -28,9 +30,14 @@ namespace GraphPlayground2.ViewModels
         public ICommand OnRightCickCommand { get; }
         public ICommand OnEdgeStateClickCommand { get; }
         public ICommand OnNodeStateClickCommand { get; }
+        public ICommand OnPointAClickCommand { get; }
+        public ICommand OnPointBClickCommand { get; }
 
         public NodeViewModel FirstSelectedNodeItem { get; set; }
         public NodeViewModel SecondSelectedNodeItem { get; set; }
+
+        public NodeViewModel APointNodeItem { get; set; }
+        public NodeViewModel BPointNodeItem { get; set; }
 
         private void HandleLeftClick(System.Windows.Point point)
         {
@@ -42,6 +49,14 @@ namespace GraphPlayground2.ViewModels
 
                 case CanvasStateEnum.EdgeModificatgion:
                     AddEdge(point);
+                    break;
+
+                case CanvasStateEnum.APointSelection:
+                    SelectAPoint(point);
+                    break;
+
+                case CanvasStateEnum.BPointSelection:
+                    SelectBPoint(point);
                     break;
             }
         }
@@ -85,7 +100,25 @@ namespace GraphPlayground2.ViewModels
                 FirstSelectedNodeItem = null;
                 SecondSelectedNodeItem = null;
             }
+        }
 
+        private void SelectAPoint(System.Windows.Point point)
+        {
+            var clickedNodeItem = GetClickedNodeItem(point);
+            if (clickedNodeItem == null) return;
+
+            APointNodeItem = clickedNodeItem;
+            clickedNodeItem.Color = Brushes.Red;
+        }
+
+
+        private void SelectBPoint(System.Windows.Point point)
+        {
+            var clickedNodeItem = GetClickedNodeItem(point);
+            if (clickedNodeItem == null) return;
+
+            BPointNodeItem = clickedNodeItem;
+            clickedNodeItem.Color = Brushes.Red;
         }
 
         private void DeleteNode(System.Windows.Point point)
@@ -110,6 +143,16 @@ namespace GraphPlayground2.ViewModels
         private void ChangeStateToNodeModification()
         {
             CanvasState = CanvasStateEnum.NodeModification;
+        }
+
+        private void ChangeStateToAPointSelection()
+        {
+            CanvasState = CanvasStateEnum.APointSelection;
+        }
+
+        private void ChangeStateToBPointSelection()
+        {
+            CanvasState = CanvasStateEnum.BPointSelection;
         }
 
         private NodeViewModel GetClickedNodeItem(System.Windows.Point point)

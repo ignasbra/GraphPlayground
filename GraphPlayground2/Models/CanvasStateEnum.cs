@@ -3,6 +3,8 @@
     public enum CanvasStateEnum
     {
         EdgeModificatgion,
-        NodeModification
+        NodeModification,
+        APointSelection,
+        BPointSelection
     }
 }

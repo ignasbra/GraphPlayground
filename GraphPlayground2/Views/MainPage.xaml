@@ -28,6 +28,8 @@
             Text="Graph theory shenanigans" />
             <Button  Margin="100 0 0 0" Content="📌" Height="40" FontSize="15" Width="60" Command="{Binding OnNodeStateClickCommand}"></Button>
             <Button  Margin="15 0 0 0" Content="🧵" Height="40" FontSize="15" Width="60" Command="{Binding OnEdgeStateClickCommand}"></Button>
+            <Button  Margin="15 0 0 0" Content="A" Height="40" FontSize="15" Width="60" Command="{Binding OnPointAClickCommand}"></Button>
+            <Button  Margin="15 0 0 0" Content="B" Height="40" FontSize="15" Width="60" Command="{Binding OnPointBClickCommand}"></Button>
         </StackPanel>
         <Grid Width="800" Height="400"
             Grid.Row="1"
@@ -77,7 +79,6 @@
                          X2="{Binding B_X}" Y2="{Binding B_Y}"
                          Stroke="{Binding Color}"
                          StrokeThickness="4"/>
-
                     </DataTemplate>
                 </ItemsControl.Resources>
             </ItemsControl>
