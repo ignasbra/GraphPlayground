@@ -168,6 +168,8 @@ namespace GraphPlayground2.ViewModels
 
         private void ImportOSMFile()
         {
+            // TODO: I need to have a better canvas, one I could zoom into and pan. Then I could display real coordinates.
+
             var graphImporter = new GraphImporter();
 
             var ofd = new Microsoft.Win32.OpenFileDialog();
