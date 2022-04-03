@@ -29,5 +29,16 @@ namespace GraphPlayground2.Models
             StrokeThickness = strokeThickness;
             Color = Brushes.LightBlue;
         }
+
+        public EdgeViewModel(System.Windows.Point a, System.Windows.Point b, double weight, int strokeThickness)
+        {
+            A_X = a.X;
+            A_Y = a.Y;
+            B_X = b.X;
+            B_Y = b.Y;
+            Weight = weight;
+            StrokeThickness = strokeThickness;
+            Color = Brushes.LightBlue;
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-
 using GraphPlayground2.ViewModels;
 
 namespace GraphPlayground2.Views

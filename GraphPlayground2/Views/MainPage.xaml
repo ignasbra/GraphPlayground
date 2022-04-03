@@ -9,7 +9,7 @@
     xmlns:app="clr-namespace:GraphPlayground2.Converters"
     xmlns:model="clr-namespace:GraphPlayground2.Models"
     mc:Ignorable="d"
-    d:DesignHeight="450" d:DesignWidth="800">
+    d:DesignHeight="850" d:DesignWidth="1600">
     
     <Page.Resources>
         <app:CoordinateConverter x:Key="CoordinateConverter"/>
@@ -30,37 +30,40 @@
             <Button  Margin="15 0 0 0" Content="🧵" Height="40" FontSize="15" Width="60" Command="{Binding OnEdgeStateClickCommand}"></Button>
             <Button  Margin="15 0 0 0" Content="A" Height="40" FontSize="15" Width="60" Command="{Binding OnPointAClickCommand}"></Button>
             <Button  Margin="15 0 0 0" Content="B" Height="40" FontSize="15" Width="60" Command="{Binding OnPointBClickCommand}"></Button>
+            <Button  Margin="15 0 0 0" Content="Import OSM" Height="40" FontSize="15" Command="{Binding OnImportOSMClickCommand}"></Button>
+            <Button  Margin="15 0 0 0" Content="Clear" Height="40" FontSize="15" Command="{Binding OnClearClickCommand}"></Button>
         </StackPanel>
-        <Grid Width="800" Height="400"
+        <Grid Width="1600" Height="800"
             Grid.Row="1"
             Margin="{StaticResource MediumLeftRightMargin}"
             Background="{DynamicResource MahApps.Brushes.Gray10}">
-
+            
             <ItemsControl ItemsSource="{Binding CanvasObjects}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
+
                         <Canvas x:Name="DemoCanvas" Background="{DynamicResource MahApps.Brushes.Gray10}">
-                            
+
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonUp">
                                     <i:InvokeCommandAction Command="{Binding OnLeftCickCommand}" 
-                                                           EventArgsConverter="{StaticResource CoordinateConverter}"
-                                                           EventArgsConverterParameter="{Binding ElementName=DemoCanvas}"
-                                                           PassEventArgsToCommand="True"/>
+                                                        EventArgsConverter="{StaticResource CoordinateConverter}"
+                                                        EventArgsConverterParameter="{Binding ElementName=DemoCanvas}"
+                                                        PassEventArgsToCommand="True"/>
                                 </i:EventTrigger>
 
                                 <i:EventTrigger EventName="MouseRightButtonUp">
                                     <i:InvokeCommandAction Command="{Binding OnRightCickCommand}" 
-                                                           EventArgsConverter="{StaticResource CoordinateConverter}"
-                                                           EventArgsConverterParameter="{Binding ElementName=DemoCanvas}"
-                                                           PassEventArgsToCommand="True"/>
+                                                        EventArgsConverter="{StaticResource CoordinateConverter}"
+                                                        EventArgsConverterParameter="{Binding ElementName=DemoCanvas}"
+                                                        PassEventArgsToCommand="True"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                            
                         </Canvas>
-                    </ItemsPanelTemplate>
+                        
+                </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                
+
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
                         <Setter Property="Canvas.Left" Value="{Binding X}"/>
@@ -75,14 +78,14 @@
 
                     <DataTemplate DataType="{x:Type model:EdgeViewModel}">
                         <Line
-                         X1="{Binding A_X}" Y1="{Binding A_Y}"
-                         X2="{Binding B_X}" Y2="{Binding B_Y}"
-                         Stroke="{Binding Color}"
-                         StrokeThickness="4"/>
+                        X1="{Binding A_X}" Y1="{Binding A_Y}"
+                        X2="{Binding B_X}" Y2="{Binding B_Y}"
+                        Stroke="{Binding Color}"
+                        StrokeThickness="1"/>
                     </DataTemplate>
                 </ItemsControl.Resources>
             </ItemsControl>
-
+            
         </Grid>
     </Grid>
 </Page>

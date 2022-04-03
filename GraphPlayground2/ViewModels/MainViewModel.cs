@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Media;
+using GraphPlayground2.Core.Models;
 using GraphPlayground2.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -20,6 +22,8 @@ namespace GraphPlayground2.ViewModels
             OnNodeStateClickCommand = new RelayCommand(ChangeStateToNodeModification);
             OnPointAClickCommand = new RelayCommand(ChangeStateToAPointSelection);
             OnPointBClickCommand = new RelayCommand(ChangeStateToBPointSelection);
+            OnImportOSMClickCommand = new RelayCommand(ImportOSMFile);
+            OnClearClickCommand = new RelayCommand(ClearNodes);
         }
 
         public ObservableCollection<ICanvasObject> CanvasObjects { get; set; }
@@ -32,6 +36,8 @@ namespace GraphPlayground2.ViewModels
         public ICommand OnNodeStateClickCommand { get; }
         public ICommand OnPointAClickCommand { get; }
         public ICommand OnPointBClickCommand { get; }
+        public ICommand OnImportOSMClickCommand { get; }
+        public ICommand OnClearClickCommand { get; }
 
         public NodeViewModel FirstSelectedNodeItem { get; set; }
         public NodeViewModel SecondSelectedNodeItem { get; set; }
@@ -76,7 +82,7 @@ namespace GraphPlayground2.ViewModels
         }
 
         private void AddNode(System.Windows.Point point) => 
-            CanvasObjects.Add(new NodeViewModel(point.X, point.Y, 10, 10));
+            CanvasObjects.Add(new NodeViewModel(point.X, point.Y, 2, 2));
 
         private void AddEdge(System.Windows.Point point)
         {
@@ -100,6 +106,11 @@ namespace GraphPlayground2.ViewModels
                 FirstSelectedNodeItem = null;
                 SecondSelectedNodeItem = null;
             }
+        }
+
+        private void AddEdge(System.Windows.Point x, System.Windows.Point y)
+        {
+            CanvasObjects.Add(new EdgeViewModel(x, y, 1, 5));
         }
 
         private void SelectAPoint(System.Windows.Point point)
@@ -153,6 +164,33 @@ namespace GraphPlayground2.ViewModels
         private void ChangeStateToBPointSelection()
         {
             CanvasState = CanvasStateEnum.BPointSelection;
+        }
+
+        private void ImportOSMFile()
+        {
+            var graphImporter = new GraphImporter();
+
+            var ofd = new Microsoft.Win32.OpenFileDialog();
+            var result = ofd.ShowDialog();
+            if (result == false) return;
+
+            var graphInRAM = graphImporter.ImportOSMFile(ofd.FileName);
+
+            foreach (var vertex in graphInRAM.Vertices)
+            {
+                AddNode(new System.Windows.Point(vertex.x % 0.1 * 10000, vertex.y % 0.1 * 10000));
+            }
+
+            foreach (var edge in graphInRAM.Edges)
+            {
+                AddEdge(new System.Windows.Point(edge.Source.x % 0.1 * 10000, edge.Source.y % 0.1 * 10000),
+                    new System.Windows.Point(edge.Target.x % 0.1 * 10000, edge.Target.y % 0.1 * 10000));
+            }
+        }
+
+        private void ClearNodes()
+        {
+            CanvasObjects.Clear();
         }
 
         private NodeViewModel GetClickedNodeItem(System.Windows.Point point)
