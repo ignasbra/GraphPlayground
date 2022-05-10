@@ -32,6 +32,10 @@
             <Button  Margin="15 0 0 0" Content="B" Height="40" FontSize="15" Width="60" Command="{Binding OnPointBClickCommand}"></Button>
             <Button  Margin="15 0 0 0" Content="Import OSM" Height="40" FontSize="15" Command="{Binding OnImportOSMClickCommand}"></Button>
             <Button  Margin="15 0 0 0" Content="Clear" Height="40" FontSize="15" Command="{Binding OnClearClickCommand}"></Button>
+            <Button  Margin="15 0 0 0" Content="Cluster" Height="40" FontSize="15" Command="{Binding OnClusterClickCommand}"></Button>
+
+            <TextBox Margin="15 0 0 0" Height="40" Width="40" Text="{Binding ES}"></TextBox>
+            <TextBox Margin="15 0 0 0" Height="40" Width="40" Text="{Binding ED}"></TextBox>
         </StackPanel>
         <Grid Width="1600" Height="800"
             Grid.Row="1"

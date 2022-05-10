@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using GraphPlayground2.Core.Models;
 using GraphPlayground2.Models;
+using GraphPlayground2.Services;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -24,6 +26,7 @@ namespace GraphPlayground2.ViewModels
             OnPointBClickCommand = new RelayCommand(ChangeStateToBPointSelection);
             OnImportOSMClickCommand = new RelayCommand(ImportOSMFile);
             OnClearClickCommand = new RelayCommand(ClearNodes);
+            OnClusterClickCommand = new RelayCommand(Cluster);
         }
 
         public ObservableCollection<ICanvasObject> CanvasObjects { get; set; }
@@ -38,12 +41,16 @@ namespace GraphPlayground2.ViewModels
         public ICommand OnPointBClickCommand { get; }
         public ICommand OnImportOSMClickCommand { get; }
         public ICommand OnClearClickCommand { get; }
+        public ICommand OnClusterClickCommand { get; }
 
         public NodeViewModel FirstSelectedNodeItem { get; set; }
         public NodeViewModel SecondSelectedNodeItem { get; set; }
 
         public NodeViewModel APointNodeItem { get; set; }
         public NodeViewModel BPointNodeItem { get; set; }
+
+        public double ES { get; set; }
+        public double ED { get; set; }
 
         private void HandleLeftClick(System.Windows.Point point)
         {
@@ -81,8 +88,51 @@ namespace GraphPlayground2.ViewModels
             }
         }
 
+        private void Cluster()
+        {
+            var clusteringService = new ClusteringService();
+
+            var graph = new Graph();
+
+            foreach (var nodeVM in CanvasObjects.Where(x => x is NodeViewModel).Select(x => x as NodeViewModel))
+            {
+                var node = new Node();
+                node.x = nodeVM.X;
+                node.y = nodeVM.Y;
+
+                graph.Nodes.Add(node);
+            }
+
+            foreach (var edgeVM in CanvasObjects.Where(x => x is EdgeViewModel).Select(x => x as EdgeViewModel))
+            {
+                var edge = new Edge();
+                edge.node1 = graph.Nodes.First(x => (Math.Abs(x.x - edgeVM.A_X) < 15) && (Math.Abs(x.y - edgeVM.A_Y) < 15));
+                edge.node2 = graph.Nodes.First(x => (Math.Abs(x.x - edgeVM.B_X) < 15) && (Math.Abs(x.y - edgeVM.B_Y) < 15));
+
+                graph.Edges.Add(edge);
+            }
+
+            clusteringService.G = graph;
+
+            var groups = clusteringService.FindClusters(ES, ED);
+
+
+            foreach (var nodeVm in CanvasObjects.Where(x => x is NodeViewModel).Select(x => x as NodeViewModel))
+            {
+                if (groups[0].Any(x => x.x == nodeVm.X && x.y == nodeVm.Y))
+                {
+                    nodeVm.Color = Brushes.Yellow;
+                }
+
+                if (groups[1].Any(x => x.x == nodeVm.X && x.y == nodeVm.Y))
+                {
+                    nodeVm.Color = Brushes.Green;
+                }
+            }
+        }
+
         private void AddNode(System.Windows.Point point) => 
-            CanvasObjects.Add(new NodeViewModel(point.X, point.Y, 2, 2));
+            CanvasObjects.Add(new NodeViewModel(point.X, point.Y, 10, 10));
 
         private void AddEdge(System.Windows.Point point)
         {
@@ -180,13 +230,13 @@ namespace GraphPlayground2.ViewModels
 
             foreach (var vertex in graphInRAM.Vertices)
             {
-                AddNode(new System.Windows.Point(vertex.x % 0.1 * 10000, vertex.y % 0.1 * 10000));
+                AddNode(new System.Windows.Point(vertex.x * 2, vertex.y * 2));
             }
 
             foreach (var edge in graphInRAM.Edges)
             {
-                AddEdge(new System.Windows.Point(edge.Source.x % 0.1 * 10000, edge.Source.y % 0.1 * 10000),
-                    new System.Windows.Point(edge.Target.x % 0.1 * 10000, edge.Target.y % 0.1 * 10000));
+                AddEdge(new System.Windows.Point(edge.Source.x * 2, edge.Source.y * 2),
+                    new System.Windows.Point(edge.Target.x * 2, edge.Target.y * 2));
             }
         }
 
